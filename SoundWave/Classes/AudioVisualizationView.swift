@@ -13,6 +13,12 @@ public class AudioVisualizationView: BaseNibView {
 		case write
 	}
 
+    public enum AudioVisualizationType {
+        case top
+        case bottom
+        case both
+    }
+    
 	@IBInspectable public var meteringLevelBarWidth: CGFloat = 3.0 {
 		didSet {
 			self.setNeedsDisplay()
@@ -29,6 +35,8 @@ public class AudioVisualizationView: BaseNibView {
 		}
 	}
 
+    public var audioVisualizationType: AudioVisualizationType = .both
+    
 	public var audioVisualizationMode: AudioVisualizationMode = .read
 	
 	public var audioVisualizationTimeInterval: TimeInterval = 0.05 // Time interval between each metering bar representation
@@ -279,8 +287,15 @@ public class AudioVisualizationView: BaseNibView {
 		let offset = max(self.currentMeteringLevelsArray.count - self.maximumNumberBars, 0)
 
 		for index in offset..<self.currentMeteringLevelsArray.count {
-			self.drawBar(index - offset, meteringLevelIndex: index, isUpperBar: true, context: context)
-			self.drawBar(index - offset, meteringLevelIndex: index, isUpperBar: false, context: context)
+            switch audioVisualizationType {
+            case .top:
+                self.drawBar(index - offset, meteringLevelIndex: index, isUpperBar: false, context: context)
+            case .bottom:
+                self.drawBar(index - offset, meteringLevelIndex: index, isUpperBar: true, context: context)
+            case .both:
+                self.drawBar(index - offset, meteringLevelIndex: index, isUpperBar: true, context: context)
+                self.drawBar(index - offset, meteringLevelIndex: index, isUpperBar: false, context: context)
+            }
 		}
 	}
 

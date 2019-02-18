@@ -80,6 +80,12 @@ self.audioVisualizationView.gradientStartColor = .white
 self.audioVisualizationView.gradientEndColor = .black
 ```
 
+You can set waveforms direction:
+
+```swift
+self.audioVisualizationView.audioVisualizationType = .top
+```
+
 > Those variables declared as `IBInspectable` can also be set from Interface Builder.
 
 ### Display sound metering levels on the fly
