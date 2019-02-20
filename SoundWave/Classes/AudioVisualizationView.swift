@@ -38,6 +38,8 @@ public class AudioVisualizationView: BaseNibView {
     public var audioVisualizationType: AudioVisualizationType = .both
     
 	public var audioVisualizationMode: AudioVisualizationMode = .read
+    
+    public var barBackgroundFillColor: UIColor? = nil
 	
 	public var audioVisualizationTimeInterval: TimeInterval = 0.05 // Time interval between each metering bar representation
 
@@ -241,7 +243,12 @@ public class AudioVisualizationView: BaseNibView {
 		context.saveGState()
 
 		let startPoint = CGPoint(x: 0.0, y: self.centerY)
-		var endPoint = CGPoint(x: self.xLeftMostBar() + self.meteringLevelBarWidth, y: self.centerY)
+        var endPoint: CGPoint
+        if self.barBackgroundFillColor == nil {
+            endPoint = CGPoint(x: self.xLeftMostBar() + self.meteringLevelBarWidth, y: self.centerY)
+        } else {
+            endPoint = startPoint
+        }
 
 		if let gradientPercentage = self.currentGradientPercentage {
 			endPoint = CGPoint(x: self.frame.size.width * CGFloat(gradientPercentage), y: self.centerY)
@@ -257,7 +264,7 @@ public class AudioVisualizationView: BaseNibView {
 
 		context.restoreGState()
 
-		if self.currentGradientPercentage != nil {
+		if self.currentGradientPercentage != nil || self.barBackgroundFillColor != nil {
 			self.drawPlainBackground(inContext: context, fillFromXCoordinate: endPoint.x)
 		}
 	}
@@ -275,7 +282,7 @@ public class AudioVisualizationView: BaseNibView {
 		squarePath.close()
 		squarePath.addClip()
 
-		self.gradientStartColor.setFill()
+		(self.barBackgroundFillColor ?? self.gradientStartColor).setFill()
 		squarePath.fill()
 
 		context.restoreGState()
