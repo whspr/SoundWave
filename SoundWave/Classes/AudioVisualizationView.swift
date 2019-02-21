@@ -40,6 +40,9 @@ public class AudioVisualizationView: BaseNibView {
 	public var audioVisualizationMode: AudioVisualizationMode = .read
     
     public var barBackgroundFillColor: UIColor? = nil
+    
+    public var progressBarMiddleOffset: CGFloat? = nil
+    public var progressBarLineHeight: CGFloat = 0
 	
 	public var audioVisualizationTimeInterval: TimeInterval = 0.05 // Time interval between each metering bar representation
 
@@ -224,6 +227,9 @@ public class AudioVisualizationView: BaseNibView {
 		UIColor.black.set()
 
 		self.drawMeteringLevelBars(inContext: maskContext!)
+        if let offset = self.progressBarMiddleOffset {
+            self.drawProcessIndicator(setOffset: offset, height: self.progressBarLineHeight, context: maskContext!)
+        }
 
 		let mask = UIGraphicsGetCurrentContext()?.makeImage()
 		UIGraphicsEndImageContext()
@@ -327,6 +333,26 @@ public class AudioVisualizationView: BaseNibView {
 
 		context.restoreGState()
 	}
+    
+    private func drawProcessIndicator(setOffset offset: CGFloat, height: CGFloat, context: CGContext) {
+        context.saveGState()
+        
+        let progressBarPath = UIBezierPath()
+        let middleCoord = self.centerY - offset
+        
+        progressBarPath.move(to: CGPoint(x: 0, y: middleCoord))
+        progressBarPath.addLine(to: CGPoint(x: self.frame.size.width, y: middleCoord))
+        progressBarPath.addLine(to: CGPoint(x: self.frame.size.width, y: middleCoord - height))
+        progressBarPath.addLine(to: CGPoint(x: 0, y: middleCoord - height))
+        
+        progressBarPath.close()
+        progressBarPath.addClip()
+        
+        (self.barBackgroundFillColor ?? self.gradientStartColor).setFill()
+        progressBarPath.fill()
+        
+        context.restoreGState()
+    }
 
 	// MARK: - Points Helpers
 
