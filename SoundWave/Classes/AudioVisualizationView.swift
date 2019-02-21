@@ -207,7 +207,7 @@ public class AudioVisualizationView: BaseNibView {
 		self.playChronometer?.stop()
 		self.playChronometer = nil
 
-		self.currentGradientPercentage = 1.0
+		self.currentGradientPercentage = 100.0
 		self.setNeedsDisplay()
 		self.currentGradientPercentage = nil
 	}
