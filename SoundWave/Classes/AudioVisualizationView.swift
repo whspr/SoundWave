@@ -207,9 +207,9 @@ public class AudioVisualizationView: BaseNibView {
 		self.playChronometer?.stop()
 		self.playChronometer = nil
 
-		self.currentGradientPercentage = 100.0
+		self.currentGradientPercentage = 0.0
 		self.setNeedsDisplay()
-		self.currentGradientPercentage = nil
+        self.currentGradientPercentage = nil
 	}
 
 	// MARK: - Mask + Gradient
@@ -271,11 +271,11 @@ public class AudioVisualizationView: BaseNibView {
 		context.restoreGState()
 
 		if self.currentGradientPercentage != nil || self.barBackgroundFillColor != nil {
-			self.drawPlainBackground(inContext: context, fillFromXCoordinate: endPoint.x)
+            self.drawPlainBackground(inContext: context, fillFromXCoordinate: endPoint.x, percentage: self.currentGradientPercentage)
 		}
 	}
 
-	private func drawPlainBackground(inContext context: CGContext, fillFromXCoordinate xCoordinate: CGFloat) {
+    private func drawPlainBackground(inContext context: CGContext, fillFromXCoordinate xCoordinate: CGFloat, percentage: Float?) {
 		context.saveGState()
 
 		let squarePath = UIBezierPath()
@@ -287,8 +287,12 @@ public class AudioVisualizationView: BaseNibView {
 
 		squarePath.close()
 		squarePath.addClip()
-
-		(self.barBackgroundFillColor ?? self.gradientStartColor).setFill()
+        if percentage == nil {
+            self.gradientEndColor.setFill()
+        } else {
+            (self.barBackgroundFillColor ?? self.gradientStartColor).setFill()
+        }
+		
 		squarePath.fill()
 
 		context.restoreGState()
