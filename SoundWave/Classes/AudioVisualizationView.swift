@@ -198,7 +198,8 @@ public class AudioVisualizationView: BaseNibView {
 
 	public func pause() {
 		guard let chronometer = self.playChronometer, chronometer.isPlaying else {
-			fatalError("trying to pause audio visualization view when not playing")
+            self.stop()
+            return
 		}
 		self.playChronometer?.pause()
 	}
